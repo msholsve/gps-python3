@@ -17,8 +17,13 @@
 # The JSON parts of this (which will be reused by any new interface)
 # now live in a different module.
 #
-from .client import *
-from .misc import iso_time
+try:
+    from .client import *
+    from .misc import iso_time
+except SystemError:
+    from client import *
+    from misc import iso_time
+
 
 NaN = float('nan')
 
@@ -286,7 +291,7 @@ class GPS(GPSCommon, GPSData, GPSJson):
             self.utc = default("time", None, TIME_SET)
             if self.utc is not None:
                 # Time can be either Unix time as a float or an ISO8601 string
-                print("GPS: received fix.time type={}".format(type(self.fix.time)))     # TODO: Remove after verified
+                # print("GPS: received fix.time type={}".format(type(self.fix.time)))     # TODO: Remove after verified
                 if isinstance(self.fix.time, float):    # changed from type(self.fix.time) == type(0.0):
                     self.fix.time = self.utc
                 elif isinstance(self.fix.time, bytes):  # added
